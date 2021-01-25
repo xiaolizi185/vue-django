@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <link rel="stylesheet" href="{{ static_url('xterm/xterm.css') }}" />
+    <script src="{{ static_url('xterm/xterm.js') }}"></script> 
+    <style>
+        body {
+             overflow-x : hidden;    
+             overflow-y : hidden;  
+        }
+        #terminal-container {
+            margin: 0 auto;
+        }
+        #connect {
+            margin: 0 auto;
+        }
+        #terminal-container a {
+            color: #fff;
+        }
+        .panel-body{
+            background-color: #000;
+        }
+    </style>
+        
+{% end %}
+        
+{% block content %}
+    <div id="dashboard">
+        <div class="box cpu">
+            <form class="form-inline">
+                <div style="display: none" class="form-group">
+                    <label for="">宿主机IP</label>
+                    <input type="text" class="form-control" name="h" placeholder="127.0.0.1" value="127.0.0.1"></div>
+                <div style="display: none" class="form-group">
+                    <label for="">DOCKER端口</label>
+                    <input type="text" class="form-control" name="p" placeholder="2375" value="2375"></div>
+                <div style="display: none" class="form-group">
+                    <label for="">容器ID</label>
+                    <input type="text" class="form-control" name="containers_id" placeholder="58856d1f916f" value="58856d1f916f"></div>
+                    
+                    <select class="form-control" name="containers_name">
+                        {% for container in containers %}
+                            <option value="{{container['Id']}}"  >{{container['Names'][0]}}</option>
+                        {% end %}
+                    </select>
+                                
+                                
+                <button type="button" class="btn btn-default" onclick="ws_connect()" id="connect_container">连接</button>
+                <button type="button" class="btn btn-default" onclick="ws_close()" id="drop_container" style="display:none">断开</button>
+            </form>
+            <div class="panel panel-default">
+                <div style="display:none1" class="panel-heading">控制台</div>
+                <div class="panel-body" >
+                    <div id="terminal-container"></div>
+                </div>
+            </div>
+            <script>
+                //获取主机 端口
+                hostname=location.hostname
+                port=location.port
+ 
+                console.log(document.body.clientWidth)
+                cols=parseInt(document.body.clientWidth /9)
+                rows=parseInt(document.body.clientHeight / 30)
+                var socket
+
+
+                function ws_connect(){
+                    var term = new Terminal({
+                        "cursorBlink":true,
+                        "rows":rows,
+                        "cols":cols,
+                    })
+                
+                    $("#connect_container").hide()
+                    $("#drop_container").show()
+                    
+                    //h=$("input[name=h]").val()
+                    //p=$("input[name=p]").val()
+                    
+                    h="127.0.0.1"
+                    p="2375"
+                    
+                    //containers_id=$("input[name=containers_id]").val()
+                    
+                    containers_id=$("select[name=containers_name]").val()
+                    
+                    console.log(h,p,containers_id)
+                    if( h == "" || p == "" || containers_id == ""){
+                        alert("不能为空!")
+                        return false
+                    }
+                    container = document.getElementById('terminal-container');
+                    url = 'ws://'+hostname+':'+port+'/ws?h='+h+'&p='+p+'&containers_id='+containers_id+'&rows='+rows+'&cols='+cols
+ 
+                    socket = new WebSocket(url);
+                    $("#terminal-container").html("")
+                    term.open(document.getElementById('terminal-container'));
+
+                    term.on('data', function (data) {
+                        socket.send(data);
+                    });
+
+                    socket.onmessage = function (e) {
+                        obj=JSON.parse(e.data);
+                        term.write(obj.data);
+                    }
+                    socket.onclose = function (e) {
+                        term.write("\r\n\r\n[连接已关闭...]\r\n");
+                        $("#connect_container").show()
+                        $("#drop_container").hide()
+                    }
+                }
+                function ws_close(){
+                    socket.close()
+                    $("#connect_container").show()
+                    $("#drop_container").hide()
+                }
+            </script>
+        </div>
+ 
+    </div>
+{% end %}

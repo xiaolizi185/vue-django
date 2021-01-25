@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="disks">
+        <div class="box">
+            <div class="box-header">
+                <span>磁盘</span>
+            </div>
+            <div class="box-content">
+                <table id="processes" class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>分区</th>
+                            <th>挂载点</th>
+                            <th>类型</th>
+                            <!-- <th>选项</th> -->
+                            <th>容量</th>
+                            <th>已使用</th>
+                            <th>空闲</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for d in disks %}
+                            <tr>
+                                <td>{{ d['device'] }}</td>
+                                <td>{{ d['mountpoint'] }}</td>
+                                <td>{{ d['type'] }}</td>
+                                <!-- <td>{{ d['options'] }}</td> -->
+                                <td>{{ filesizeformat(d['space_total']) }}</td>
+                                <td>{{ filesizeformat(d['space_used']) }} ({{ d['space_used_percent'] }} %)</td>
+                                <td>{{ filesizeformat(d['space_free']) }}</td>
+                            </tr>
+                            {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header">
+                <span>磁盘I/O</span>
+            </div>
+            <div class="box-content">
+                <table id="processes" class="table">
+                    <thead>
+                        <tr>
+                            <th>分区</th>
+                            <th>读取IO次数</th>
+                            <th>写入IO次数</th>
+                            <th>读取字节数</th>
+                            <th>写入字节数</th>
+                            <th>读取时间(ms)</th>
+                            <th>写入时间(ms)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dev, io in io_counters %}
+                        <tr>
+                            <td>{{ dev }}</td>
+                            <td>{{ io['read_count'] }}</td>
+                            <td>{{ io['write_count'] }}</td>
+                            <td>{{ filesizeformat(io['read_bytes']) }}</td>
+                            <td>{{ filesizeformat(io['write_bytes']) }}</td>
+                            <td>{{ io['read_time'] }}</td>
+                            <td>{{ io['write_time'] }}</td>
+                        </tr>
+                        {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% end %}

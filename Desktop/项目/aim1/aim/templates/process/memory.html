@@ -1,0 +1,37 @@
+{% extends "../process.html" %}
+{% block process_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>文件名</th>
+                <th>物理内存(RSS)</th>
+                <th>地址空间</th>
+                <th>物理内存(PSS)</th>
+                <th>共享内存(clean)</th>
+                <th>共享内存(dirty)</th>
+                <th>私有内存(clean)</th>
+                <th>私有内存(dirty)</th>
+                <th>referenced</th>
+                <th>anonymous</th>
+                <th>SWAP占用</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in memory_maps %}
+                <tr>
+                    <td>{{ m['path'] }}</td>
+                    <td>{{ m['rss'] }}</td>
+                    <td>{{ m['size'] }}</td>
+                    <td>{{ m['pss'] }}</td>
+                    <td>{{ m['shared_clean'] }}</td>
+                    <td>{{ m['shared_dirty'] }}</td>
+                    <td>{{ m['private_clean'] }}</td>
+                    <td>{{ m['private_dirty'] }}</td>
+                    <td>{{ m['referenced'] }}</td>
+                    <td>{{ m['anonymous'] }}</td>
+                    <td>{{ m['swap'] }}</td>
+                </tr>
+            {% end %}
+        </tbody>
+    </table>
+{% end %}

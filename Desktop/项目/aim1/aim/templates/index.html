@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="dashboard">
+        <div class="box cpu">
+            <div class="box-header">
+                <span>CPU</span>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <tr>
+                        <td class="label-col">名称</td>
+                        {% if cpu_name %}
+                            <td class="load">{{cpu_name}}</td>
+                        {% else %}
+                            <td class="load">检测中</td>
+                        {% end %}
+                    </tr>
+                    <tr>
+                        <td class="label-col">温度</td>
+                        {% set cpu_temperature = get_cpu_temperature()%}
+                        {% if cpu_temperature %}
+                            <td class="load">{{ cpu_temperature }}°C</td>
+                        {% else %}
+                            <td class="load">{{ "虚拟机无法检测或用户权限不足！" }}</td>
+                        {% end %}
+                    </tr>
+                    <tr>
+                        <td class="label-col">核心数</td>
+                        <td class="iowait">{{ num_cpus }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">CPU使用率</td>
+                        {% if cpu_percent %}
+                            <td class="load">{{cpu_percent}}%</td>
+                        {% else %}
+                            <td class="load">检测中</td>
+                        {% end %}
+                    </tr>
+                    <tr>
+                        <td class="label-col">用户占用</td>
+                        <td class="user">{{ cpu.user }} %</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">内核占用</td>
+                        <td class="system">{{ cpu.system }} %</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">空闲</td>
+                        <td class="idle">{{ cpu.idle }} %</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="box memory">
+            <div class="box-header">
+                <span>内存</span>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <tr>
+                        <td class="label-col">容量</td>
+                        <td class="total">{{ filesizeformat(memory.total) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">空闲 <small>(cache & buffers)</small></td>
+                        <td class="available">{{ filesizeformat(memory.available) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">已使用 <small>(cache & buffers)</small></td>
+                        <td class="used_excl">{{ filesizeformat(memory.total - memory.available) }} ({{ memory.percent }} %)</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">已使用 <small>(不含cache & buffers)</small></td>
+                        <td class="used_incl">{{ filesizeformat(memory.used) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">空闲 <small>(不含cache & buffers)</small>	</td>
+                        <td class="free">{{ filesizeformat(memory.free) }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <div class="box network">
+            <div class="box-header">
+                <span>网络</span>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>网卡</th>
+                            <th>IP地址</th>
+                            <th>子网掩码</th>
+                            <th>下载量</th>
+                            <th>上传量</th>
+                            
+                            <th>下载速度(RX/s)</th>
+                            <th>上传速度(TX/s)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for net in net_interfaces %}
+                            <tr>
+                                <td>{{ net['name'] }}</td>
+                                <td>{{ net['ip'] }}</td>
+                                <td>{{ net['netmask'] }}</td>
+                                <td>{{ filesizeformat(net['bytes_recv']) }}</td>
+                                <td>{{ filesizeformat(net['bytes_sent']) }}</td>                                
+                                <td>{{ filesizeformat(net['recv_rate']) }}</td>
+                                <td>{{ filesizeformat(net['send_rate']) }}</td>
+                            </tr>
+                        {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="box disks">
+            <div class="box-header">
+                <span>硬盘</span>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>分区</th>
+                            <th>挂载点</th>
+                            <th>容量</th>
+                            <th>已使用</th>
+                            <th>空闲</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in disks %}
+                            <tr>
+                                <td>{{ d['device'] }}</td>
+                                <td>{{ d['mountpoint'] }}</td>
+                                <td>{{ filesizeformat(d['space_total']) }}</td>
+                                <td>{{ filesizeformat(d['space_used']) }}  ({{ d['space_used_percent'] }} %) </td>
+                                <td>{{ filesizeformat(d['space_free']) }}</td>
+                            </tr>
+                        {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="box users">
+            <div class="box-header">
+                <span>当前用户</span>
+            </div>
+            <div class="box-content">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>登录时间</th>
+                            <th>登录IP</th>
+                            <th>终端</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                            <tr>
+                                <td>{{ u['name'] }}</td>
+                                <td>{{ fromtimestamp(u['started']) }}</td>
+                                <td>{{ u['host'] }}</td>
+                                <td>{{ u['terminal'] }}</td>
+                            </tr>
+                        {% end %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+{% end %}

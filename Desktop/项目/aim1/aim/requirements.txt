@@ -1,0 +1,15 @@
+--index-url https://pypi.douban.com/simple/
+--extra-index-url https://mirrors.aliyun.com/pypi/simple/
+
+tornado>=5.1:q
+:q.1
+psutil>=5.4.7
+sqlitedict>=1.6.0
+apscheduler>=3.5.3
+torndsession>=1.1.5.1
+terminado>=0.8.1
+requests>=2.19.1
+pyinstaller>=3.4
+
+#wmi>=1.4.9
+#pywin32>=223

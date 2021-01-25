@@ -1,0 +1,19 @@
+{% extends "../process.html" %}
+{% block process_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>变量</th>
+                <th>值</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for var, value in process_environ.items() %}
+                <tr>
+                    <td>{{ var }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+            {% end %}
+        </tbody>
+    </table>
+{% end %}

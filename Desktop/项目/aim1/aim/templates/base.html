@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>AIM - 简便的主机监控面板</title>
+        <link href="{{ static_url("css/bootstrap.min.css") }}" rel="stylesheet">
+        <link href="{{ static_url("css/psdash.css") }}" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Ubuntu:300,400' rel='stylesheet' type='text/css'>
+        
+        <link rel="shortcut icon" href="{{ static_url("monitor_128px_1204555_easyicon.net.ico") }}">
+ 
+        <script src="{{ static_url("js/jquery.min.js") }}"></script>
+        <script src="{{ static_url("js/bootstrap.min.js") }}"></script>
+        <script src="{{ static_url("js/psdash.js") }}"></script>
+
+        <style>
+            #psdash .header .logo {
+                background-color:#313443;
+            }
+        </style>
+        
+        {% block title %}
+            
+        {% end %}
+    </head>
+    <body>
+        <div id="psdash">
+            <div class="header">
+                <div class="logo">
+                    <img style="margin-top: -6px;margin-left: -10px" src="{{ static_url("monitor_128px_1204555_easyicon.net.ico") }}" height="35" width="35" >
+                    <a href="/">
+                        <span class="app-name">主机监控 <small>v1.0.0</small></span>
+                    </a>
+                </div>
+                <div class="top-nav">
+                    <div class="host-info">
+                        <div class="name">
+                             <span class="hostname">主机名: {{ hostname() }}</span>
+                        </div>
+                        <div class="info">
+                            {% import time %}
+                            系统：{{ os() }}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp启动时间：{{ uptime() }}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp服务器时间：{{ time.strftime("%Y-%m-%d %H:%M:%S ",time.localtime(time.time())) }}
+                        </div>
+                    </div>
+                    
+                    {#
+                    <div style="padding-top:8px;"class="dropdown">
+                        {%  if current_user %}
+                            <!-- <img style="height:30px;width:30px;" src="{{ static_url('avatar.jpg') }}"> -->
+                            <button style="border:0" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                管理员
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="/logout/">注销</a></li>
+                            </ul>
+                        {% else %}
+                            <label style="padding-top:0px;" class="button">
+                                <a href="{{ reverse_url('login') }}" > 
+                                    <span class="btn btn-default">登录</span>
+                                </a>
+                            </label>
+                        {% end %}
+                    </div>
+                    #}
+                    
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="content">
+                    <div class="left-nav">
+                        <ul class="menu">
+                            <li {% if page == "overview" %}class="active"{% end %}>
+                                <a href="/">
+                                    <span class="glyphicon glyphicon-th"></span>
+                                    <span class="option-text">总览</span>
+                                </a>
+                            </li>
+                            <li {% if page == "processes" %}class="active"{% end %}>
+                                <a href="/processes/">
+                                    <span class="glyphicon glyphicon-tasks"></span>
+                                    <span class="option-text">进程</span>
+                                </a>
+                            </li>
+                            <li {% if page == "networks" %}class="active"{% end %}>
+                                <a href="/networks/">
+                                    <span class="glyphicon glyphicon-transfer"></span>
+                                    <span class="option-text">网络</span>
+                                </a>
+                            </li>
+                            <li {% if page == "disks" %}class="active"{% end %}>
+                                <a href="/disks/">
+                                    <span class="glyphicon glyphicon-hdd"></span>
+                                    <span class="option-text">磁盘</span>
+                                </a>
+                            </li>
+                            <li style="display:none" >
+                                <a href="/terminal/">
+                                    <span class="glyphicon glyphicon-unchecked"></span>
+                                    <span class="option-text">终端</span>
+                                </a>
+                            </li>
+                            <li style="display:none" {% if page == "docker" %}class="active"{% end %}>
+                                <a href="/docker/">
+                                    <span class="glyphicon glyphicon-inbox"></span>
+                                    <span class="option-text">容器</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="main-content">
+                        {% block content %}{% end %}
+                        <p style="display: none" style="text-align: center;" class="footer-content">
+                            Copyright © 王海庆 | 
+                            <a href="http://www.miitbeian.gov.cn/publish/query/indexFirst.action" rel="nofollow" target="_blank">蜀ICP备17009560号</a>
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+
+    </body>
+</html>

@@ -1,0 +1,68 @@
+#!/bin/bash
+ 
+# chkconfig: - 95 04
+# description: nginx is a World Wide Web server. It is used to serve
+ 
+. /etc/rc.d/init.d/functions
+ 
+RETVAL=0
+
+start() {
+	echo -n $"Starting aimud: "
+    echo
+    daemon /usr/bin/aimu  &
+    
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/aimud
+}
+
+stop() {
+	echo -n $"Stopping aimud: "
+    killproc aimu
+    echo
+    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/aimud
+}
+
+restart() {
+	stop
+	start
+}
+
+rh_status() {
+        status /usr/bin/aimu
+}
+
+rh_status_q() {
+        rh_status >/dev/null 2>&1
+}
+
+
+case "$1" in
+  start)
+    rh_status_q && exit 0
+	start
+	;;
+  stop) 
+    if ! rh_status_q; then
+        rm -f /var/lock/subsys/aimud
+        exit 0
+    fi                
+	stop
+	;;
+  restart|force-reload|reload)
+	restart
+	;;
+  condrestart)
+	[ -f /var/lock/subsys/aimud ] && restart
+	;;
+  status)
+    status  /usr/bin/aimu
+	RETVAL=$?
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|status|restart|reload|force-reload|condrestart}"
+	exit 1
+esac
+
+exit $RETVAL

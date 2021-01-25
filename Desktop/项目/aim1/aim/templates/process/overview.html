@@ -1,0 +1,161 @@
+{% extends "../process.html" %}
+{% block process_content %}
+    <table class="table">
+        <tr class="skip-border">
+            <td>进程ID</td>
+            <td>{{ process['pid'] }}</td>
+        </tr>
+        {% if process['parent_name'] %}
+        <tr>
+            <td>父进程(ID)</td>
+            <td><a href="{{ reverse_url("process", process['ppid'], "overview") }}">{{ process['parent_name'] }}</a> ({{ process['ppid'] }})</td>
+        </tr>
+        {% end %}
+        <tr>
+            <td>命令</td>
+            <td>
+                {{ process['cmdline'] }}
+            </td>
+        </tr>
+        <tr>
+            <td>所属用户</td>
+            <td>{{ process['user'] }}</td>
+        </tr>
+        <tr>
+            <td>用户ID</td>
+            <td>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>real</td>
+                        <td>{{ process['uid_real'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>effective</td>
+                        <td>{{ process['uid_effective'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>saved</td>
+                        <td>{{ process['uid_saved'] }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>组ID</td>
+            <td>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>real</td>
+                        <td>{{ process['gid_real'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>effective</td>
+                        <td>{{ process['gid_effective'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>saved</td>
+                        <td>{{ process['gid_saved'] }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td>内存</td>
+            <td>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>物理内存(rss)</td>
+                        <td>{{ filesizeformat(process['mem_rss']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>虚拟内存(vms)</td>
+                        <td>{{ filesizeformat(process['mem_vms']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>shared</td>
+                        <td>{{ filesizeformat(process['mem_shared']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>text</td>
+                        <td>{{ filesizeformat(process['mem_text']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>lib</td>
+                        <td>{{ filesizeformat(process['mem_lib']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>data</td>
+                        <td>{{ filesizeformat(process['mem_data']) }}</td>
+                    </tr>
+                    <tr>
+                        <td>dirty</td>
+                        <td>{{ filesizeformat(process['mem_dirty']) }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>终端</td>
+            <td>{{ process['terminal'] }}</td>
+        </tr>
+        <tr>
+            <td>状态</td>
+            <td>{{ process['status'] }}</td>
+        </tr>
+        <tr>
+            <td>优先级</td>
+            <td>{{ process['nice'] }}</td>
+        </tr>
+        <tr>
+            <td>I/O优先级</td>
+            <td>class: {{ process['io_nice_class'] }}, value: {{ process['io_nice_value'] }}</td>
+        </tr>
+        <tr>
+            <td>当前目录</td>
+            <td>{{ process['cwd'] }}</td>
+        </tr>
+        <tr>
+            <td>打开文件数</td>
+            <td>{{ process['num_files'] }}</td>
+        </tr>
+        <tr>
+            <td>线程数量</td>
+            <td>{{ process['num_threads'] }}</td>
+        </tr>
+        <tr>
+            <td>上下文切换</td>
+            <td>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>voluntary</td>
+                        <td>{{ process['num_ctx_switches_vol'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>involuntary</td>
+                        <td>{{ process['num_ctx_switches_invol'] }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>CPU时间</td>
+            <td>
+                <table class="table table-bordered">
+                    <tr>
+                        <td>user</td>
+                        <td>{{ process['cpu_times_user'] }}</td>
+                    </tr>
+                    <tr>
+                        <td>system</td>
+                        <td>{{ process['cpu_times_system'] }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>CPU亲和性</td>
+            <td>{{ process['cpu_affinity'] }}</td>
+        </tr>
+    </table>
+{% end %}

@@ -1,0 +1,23 @@
+{% extends "../process.html" %}
+{% block process_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>进程ID</th>
+                <th>进程名</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in children %}
+                <tr>
+                    <td>{{ p['pid'] }}</td>
+                    <td title="{{ p['cmdline'] }}">
+                        <a href="{{ reverse_url("process", p['pid'], "overview") }}">{{ p['name'] }}</a>
+                    </td>
+                    <td>{{ p['status'] }}</td>
+                </tr>
+            {% end %}
+        </tbody>
+    </table>
+{% end %}

@@ -1,0 +1,15 @@
+[Unit]
+Description=AIM Monitoring
+
+[Service]
+#Environment="MALLOC_ARENA_MAX=1" "PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+Environment="MALLOC_ARENA_MAX=1"
+Environment="PATH=/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+WorkingDirectory=/opt/aim-tool/
+ExecStart=/opt/aim-tool/aim
+Type=simple
+SysVStartPriority=99
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

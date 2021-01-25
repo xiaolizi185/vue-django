@@ -1,0 +1,13 @@
+[Unit]
+Description=AIMU Monitoring
+
+[Service]
+Environment="PATH=/opt/package/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+WorkingDirectory=/usr/lib/systemd/system
+ExecStart=/usr/bin/aimu
+Type=simple
+SysVStartPriority=99
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

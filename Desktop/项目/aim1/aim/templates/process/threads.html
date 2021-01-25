@@ -1,0 +1,21 @@
+{% extends "../process.html" %}
+{% block process_content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>线程ID</th>
+                <th>用户时间</th>
+                <th>CPU时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in threads %}
+                <tr>
+                    <td>{{ t['id'] }}</td>
+                    <td>{{ t['cpu_time_user'] }}</td>
+                    <td>{{ t['cpu_time_system'] }}</td>
+                </tr>
+            {% end %}
+        </tbody>
+    </table>
+{% end %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+ 
+    {% set next_order = "desc" if order == "asc" else "asc" %}
+    {% if order == "asc" %}
+        {% set order_icon = '<span class="order-icon glyphicon glyphicon-chevron-up"></span>' %}
+    {% else %}
+        {% set order_icon = '<span class="order-icon glyphicon glyphicon-chevron-down"></span>' %}
+    {% end %}
+    <div id="processes" class="box">
+        <div class="box-header">
+            <span>Processes</span>
+            <small class="pull-right">找到 {{ len(processes) }} 个进程</small>
+        </div>
+        <div class="box-content">
+ 
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            <a href="{{ reverse_url("processes", 'pid', next_order) }}">进程ID</a>
+                            {% if sort == "pid" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        <th>
+                            <a href="{{ reverse_url("processes", 'name', next_order) }}">进程名</a>
+                            {% if sort == "name" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        <th>
+                            <a href="{{ reverse_url("processes", 'user', next_order) }}">所属用户</a>
+                            {% if sort == "user" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        <th>
+                            <a href="{{ reverse_url("processes", 'status', next_order) }}">状态</a>
+                            {% if sort == "status" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        <th>
+                            <a href="{{ reverse_url("processes", 'created', next_order) }}">创建时间</a>
+                            {% if sort == "created" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+ 
+                        <th>
+                            <a href="{{ reverse_url("processes", 'mem_vms', next_order) }}">虚拟内存(VMS)</a>
+                            {% if sort == "mem_vms" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        
+                        <th>
+                            <a href="{{ reverse_url("processes", 'mem_rss', next_order) }}">物理内存(RSS)</a>
+                            {% if sort == "mem_rss" %}   {% raw order_icon %}   {% end %}
+                        </th>  
+                        
+                        <th>
+                            <a href="{{ reverse_url("processes", 'mem_percent', next_order) }}">内存占用</a>
+                            {% if sort == "mem_percent" %}   {% raw order_icon %}   {% end %}
+                        </th>   
+                        <th>
+                            <a href="{{ reverse_url("processes", 'cpu_percent', next_order) }}">CPU占用</a>
+                            {% if sort == "cpu_percent" %}   {% raw order_icon %}   {% end %}
+                        </th>
+                        <th style="display:none;">
+                            <a href="{{ reverse_url("processes", 'xxx', next_order) }}">重要知识点</a>
+                            {% if sort == "xxx" %}   {% raw order_icon %}   {% end %}
+                        </th>
+                         
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in processes %}
+                        <tr>
+                          <td>{{ p['pid'] }}</td>
+                          <td title="{{ p['cmdline'] }}">
+                              <a href="{{ reverse_url("process", p['pid'], "overview") }}">{{ p['name'] }}</a><br/>
+                              <small>{{ truncate(p['cmdline'], 50) }}</small>
+                          </td>
+                          <td>{{ p['user'] }}</td>
+                          <td>{{ p['status'] }}</td>
+                          <td>{{ fromtimestamp(p['created'])  }}</td>
+                          <td>{{ filesizeformat(p['mem_vms']) }}</td>
+                          <td>{{ filesizeformat(p['mem_rss']) }}</td>
+                          <td>{{ show_float(p['mem_percent'], 2) }}</td>
+                          <td>{{ p['cpu_percent'] }}</td>
+                          
+                          
+                          <td style="display:none;">
+                            {% if PY3 %}
+                                {{ reverse_url("processes", "mem_percent", next_order)+ "?" + urllib.parse.urlencode(dict(sort='123',order='456')) }}
+                            {% else %}
+                                {{ reverse_url("processes", "mem_percent", next_order)+ "?" + urllib.urlencode(dict(sort='123',order='456')) }}
+                            {% end %}
+
+                          </td>
+                          
+                          
+                          
+                        </tr>
+                    {% end %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% end %}
+  
